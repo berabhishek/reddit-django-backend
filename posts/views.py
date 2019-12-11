@@ -84,7 +84,7 @@ class Nested_Reply_View(APIView):
         except:
             return JsonResponse([], safe=False)
     
-    def post(self, request, id, format=None):
+    def post(self, request, format=None):
         data = JSONParser().parse(request)
         data["user"] = request.user.id
         serializer = NestedReplySerializer(data=data)

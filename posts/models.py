@@ -9,9 +9,6 @@ class DefaultFeatures(models.Model):
     date = models.DateTimeField(name="Posted Date", auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return str(self.user) + str(self.post_text[:20])+"..."
-    
     def created_within_hours(self, hrs):
         return True
     
@@ -21,7 +18,7 @@ class DefaultFeatures(models.Model):
         abstract = True
 
 class Post(DefaultFeatures):
-    pass
+    title = models.TextField(name="Title")
 
 class Comment(DefaultFeatures):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

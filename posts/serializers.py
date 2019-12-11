@@ -8,15 +8,15 @@ class PostSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        models = Comment
-        fields = ['auto_id', 'likes', 'text', 'date', 'user', 'post']
+        model = Comment
+        exclude =[]
 
 class CommentReplySerializer(serializers.ModelSerializer):
     class Meta:
-        models = Comment_Reply
-        fields = ['auto_id', 'likes', 'text', 'date', 'user', 'comment']
+        model = Comment_Reply
+        exclude = []
 
 class NestedReplySerializer(serializers.ModelSerializer):
     class Meta:
-        models = Nested_Reply
-        fields = ['auto_id', 'likes', 'text', 'date', 'user', 'reply']
+        model = Nested_Reply
+        exclude = []

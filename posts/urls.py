@@ -8,5 +8,7 @@ urlpatterns = [
     path('add_comment', views.Comment_View.as_view(), name="add_comments"),
     path('usertoken', authview.obtain_auth_token, name="user_token"),
     path('create_user', views.create_user, name="create_user"),
-    path('check_user', views.check_user, name="check_user")
+    path('check_user', views.check_user, name="check_user"),
+    path('vote_post', views.VotePost.as_view(), name="vote_post"),
+    path('vote_comment', views.VoteComment.as_view(), name="vote_comment")
 ]

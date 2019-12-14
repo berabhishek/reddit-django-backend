@@ -13,14 +13,28 @@ class DefaultFeatures(models.Model):
 
 class Post(DefaultFeatures):
     title = models.TextField()
+    
+    @property
+    def likes(self):
+        return len(Votes_Post.objects.filter(post_id=self.auto_id).filter(vote_direction=1))
+    
+    @property
+    def dislikes(self):
+        return len(Votes_Post.objects.filter(post_id=self.auto_id).filter(vote_direction=-1))
 
 class Comment(DefaultFeatures):
     parent_comment = models.ForeignKey('self',null=True, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
-class Votes(models.Model):
+class Votes_Parent(models.Model):
+    class Meta:
+        abstract = True
     auto_id = models.AutoField(primary_key=True)
     vote_direction = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    post_id = models.ForeignKey(Post, null=True, on_delete=models.CASCADE)
-    comment_id = models.ForeignKey(Comment, null=True, on_delete=models.CASCADE)
+
+class Votes_Post(Votes_Parent):
+    post_id = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+class Votes_Comment(Votes_Parent):
+    comment_id = models.ForeignKey(Comment, on_delete=models.CASCADE)

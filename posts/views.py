@@ -4,6 +4,7 @@ from rest_framework.parsers import JSONParser
 from posts.models import Post, Comment
 from posts.serializers import PostSerializer, CommentSerializer
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -56,4 +57,28 @@ class Comment_View(APIView):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
-#Views to populate entire view
+@csrf_exempt
+def create_user(request):
+    if request.method == "POST":
+        data = JSONParser().parse(request)
+        username = data["username"]
+        password = data["password"]
+        try:
+            existing_user = User.objects.get(username=username)
+            return JsonResponse({"status": "User exists"}, status=201)
+        except:
+            user = User.objects.create(username=username)
+            user.set_password(password)
+            user.save()
+            return JsonResponse({"status": "success"}, status=201)
+
+@csrf_exempt
+def check_user(request):
+    if request.method == "POST":
+        data = JSONParser().parse(request)
+        username = data["username"]
+        password = data["password"]
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            return JsonResponse({"status": "success"}, status=201)
+        return JsonResponse({"status": "failure"}, status=201)

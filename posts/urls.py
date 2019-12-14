@@ -6,5 +6,7 @@ urlpatterns = [
     path('post/<int:id>', views.Post_View.as_view(), name="all_posts"),
     re_path(r'comments/(?P<id>[\d/]+)$', views.Comment_View.as_view(), name="all_comments"),
     path('add_comment', views.Comment_View.as_view(), name="add_comments"),
-    path('usertoken', authview.obtain_auth_token, name="user_token")
+    path('usertoken', authview.obtain_auth_token, name="user_token"),
+    path('create_user', views.create_user, name="create_user"),
+    path('check_user', views.check_user, name="check_user")
 ]

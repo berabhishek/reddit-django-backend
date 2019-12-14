@@ -61,27 +61,32 @@ class Comment_View(APIView):
 def create_user(request):
     if request.method == "POST":
         data = JSONParser().parse(request)
-        username = data["username"]
-        password = data["password"]
         try:
-            existing_user = User.objects.get(username=username)
-            return JsonResponse({"status": "User exists"}, status=201)
+            username = data["username"]
+            password = data["password"]
+            try:
+                existing_user = User.objects.get(username=username)
+                return JsonResponse({"status": "User exists"}, status=201)
+            except:
+                user = User.objects.create(username=username)
+                user.set_password(password)
+                user.save()
+                return JsonResponse({"status": "success"}, status=201)
         except:
-            user = User.objects.create(username=username)
-            user.set_password(password)
-            user.save()
-            return JsonResponse({"status": "success"}, status=201)
-
+            return JsonResponse(["username", "password"], safe=False)
 @csrf_exempt
 def check_user(request):
     if request.method == "POST":
         data = JSONParser().parse(request)
-        username = data["username"]
-        password = data["password"]
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            return JsonResponse({"status": "success"}, status=201)
-        return JsonResponse({"status": "failure"}, status=201)
+        try:
+            username = data["username"]
+            password = data["password"]
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                return JsonResponse({"status": "success"}, status=201)
+            return JsonResponse({"status": "failure"}, status=201)
+        except:
+            return JsonResponse(["username", "password"], safe=False)
 
 class VotePost(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]

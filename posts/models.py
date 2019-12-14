@@ -4,27 +4,23 @@ from django.contrib.auth.models import User
 
 class DefaultFeatures(models.Model):
     auto_id = models.AutoField(primary_key=True)
-    likes = models.IntegerField(name="Likes")
-    text = models.TextField(name="Content")
-    date = models.DateTimeField(name="Posted Date", auto_now=True)
+    text = models.TextField()
+    date = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def created_within_hours(self, hrs):
-        return True
-    
-    def comment_count(self):
-        return 0
     class Meta:
-        abstract = True
+        abstract=True
 
 class Post(DefaultFeatures):
-    title = models.TextField(name="Title")
+    title = models.TextField()
 
 class Comment(DefaultFeatures):
+    parent_comment = models.ForeignKey('self',null=True, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
-class Comment_Reply(DefaultFeatures):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-
-class Nested_Reply(DefaultFeatures):
-    reply = models.ForeignKey("self", on_delete=models.CASCADE)
+class Votes(models.Model):
+    auto_id = models.AutoField(primary_key=True)
+    vote_direction = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post_id = models.ForeignKey(Post, null=True, on_delete=models.CASCADE)
+    comment_id = models.ForeignKey(Comment, null=True, on_delete=models.CASCADE)
